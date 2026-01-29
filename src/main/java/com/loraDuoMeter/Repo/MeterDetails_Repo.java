@@ -17,7 +17,7 @@ public interface MeterDetails_Repo extends JpaRepository<MeterDetails_Entity, Lo
 	List<MeterDetails_Entity> findByOrderBySlNoDesc();
 	
 	@Query(nativeQuery = true, value = """
-			select distinct building_name from meter_details;
+			select distinct building_name from meter_details where building_name is not null;
 			""")
 	List<MeterDetailsBuildingName_Dto> fetchDistinctBuildingName();
 	
