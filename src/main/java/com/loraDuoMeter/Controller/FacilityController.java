@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -65,7 +68,9 @@ public class FacilityController {
             // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             // String currentTime = LocalDateTime.now().format(formatter);
             // building.setLastInsertedTime(currentTime);
-
+        	// --- ADDED: Set Date Time Format ---
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            building.setDateTime(LocalDateTime.now().format(formatter));
             // 2. Save first to generate the numeric ID (sl_no)
             BuildingEntity savedBuilding = buildingRepo.save(building);
 
@@ -94,6 +99,23 @@ public class FacilityController {
             // REMOVED: Update timestamp
             // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             // building.setLastInsertedTime(LocalDateTime.now().format(formatter));
+         // --- ADDED: Update Date Time on Update ---
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            building.setDateTime(LocalDateTime.now().format(formatter));
+         // 1. Save the updated Building first
+            BuildingEntity savedBuilding = buildingRepo.save(building);
+
+            // --- ADDITION START: Cascade Update to Related Tables ---
+            // If the Building Name changes, we must update it in Residents, Gateways, and Meters
+            if (savedBuilding.getBuildingId() != null && savedBuilding.getName() != null) {
+                String bId = savedBuilding.getBuildingId();
+                String newName = savedBuilding.getName();
+
+                residentRepo.updateBuildingName(bId, newName);
+                gatewayRepo.updateBuildingName(bId, newName);
+                meterRepo.updateBuildingName(bId, newName);
+            }
+            // --- ADDITION END ---
             
             return ResponseEntity.ok(buildingRepo.save(building));
         } catch (Exception e) {
@@ -203,28 +225,32 @@ public class FacilityController {
 
     @PostMapping("/import-gateways")
     public ResponseEntity<?> importGateways(@RequestParam("file") MultipartFile file) {
-        if (ExcelHelper.hasExcelFormat(file)) {
+        // Accept BOTH Excel and CSV to avoid 400 Bad Request
+        if (ExcelHelper.hasExcelFormat(file) || ExcelHelper.hasCSVFormat(file)) {
             try {
                 excelService.saveGateways(file); 
-                return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
+                return ResponseEntity.status(HttpStatus.OK).body("Uploaded gateways successfully: " + file.getOriginalFilename());
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Could not upload the file: " + file.getOriginalFilename() + "!");
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Error: " + e.getMessage());
             }
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload an excel file!");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload an Excel (.xlsx) or CSV file!");
     }
 
     @PostMapping("/import-meters")
     public ResponseEntity<?> importMeters(@RequestParam("file") MultipartFile file) {
-        if (ExcelHelper.hasExcelFormat(file)) {
+        // ALLOW BOTH EXCEL & CSV
+        if (ExcelHelper.hasExcelFormat(file) || ExcelHelper.hasCSVFormat(file)) {
             try {
                 excelService.saveMeters(file); 
-                return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
+                return ResponseEntity.status(HttpStatus.OK).body("Uploaded meters successfully: " + file.getOriginalFilename());
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Could not upload the file: " + file.getOriginalFilename() + "!");
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Could not upload: " + e.getMessage());
             }
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload an excel file!");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload an Excel or CSV file!");
     }
     
  // --- UPDATED: Add Resident with TWO Files ---
@@ -239,7 +265,8 @@ public class FacilityController {
             // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             // String currentTime = LocalDateTime.now().format(formatter);
             // resident.setLastInsertedTime(currentTime);
-
+        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            resident.setDateTime(LocalDateTime.now().format(formatter));
             String folderPath = "D:\\LoraDua Documents\\";
             File directory = new File(folderPath);
             if (!directory.exists()) {
@@ -297,7 +324,8 @@ public class FacilityController {
             // REMOVED: Set Last Inserted Time
             // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             // resident.setLastInsertedTime(LocalDateTime.now().format(formatter));
-
+        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            resident.setDateTime(LocalDateTime.now().format(formatter));
             String folderPath = "D:\\LoraDua Documents\\";
             File directory = new File(folderPath);
             if (!directory.exists()) directory.mkdirs();
@@ -328,7 +356,21 @@ public class FacilityController {
                 saved.setResidentId(customId);
                 saved = residentRepo.save(saved);
             }
-
+            
+         // --- ADDITION START: Cascade Update to Meters ---
+            else if (isUpdate) {
+                // Sync Name, Type, Floor, and Flat to the Meters table
+                if (saved.getResidentId() != null) {
+                    meterRepo.updateResidentDetails(
+                        saved.getResidentId(), 
+                        saved.getFullName(), 
+                        saved.getType(),      // Maps to MeterEntity.residentType
+                        saved.getFloorNo(),   // Maps to MeterEntity.floorNo
+                        saved.getFlatNo()     // Maps to MeterEntity.flatNo
+                    );
+                }
+            }
+            // --- ADDITION END ---
             return ResponseEntity.ok(saved);
         } catch (Exception e) {
             e.printStackTrace();
@@ -398,7 +440,7 @@ public class FacilityController {
     }
     
  // --- NEW: Gateway Endpoints ---
-    @PostMapping("/add-gateway")
+   /* @PostMapping("/add-gateway")
     public ResponseEntity<?> addGateway(@RequestBody GatewayEntity gateway) {
         try {
             // REMOVED: Set Time
@@ -409,6 +451,39 @@ public class FacilityController {
             // 2. Save Gateway
             GatewayEntity savedGateway = gatewayRepo.save(gateway);
             return ResponseEntity.ok(savedGateway);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error saving gateway: " + e.getMessage());
+        }
+    }*/
+    
+ // --- UPDATED: Add Gateway (Upsert Logic) ---
+    @PostMapping("/add-gateway")
+    public ResponseEntity<?> addGateway(@RequestBody GatewayEntity gateway) {
+        try {
+        	
+        	// --- ADDED: Set Date Time Format ---
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            gateway.setDateTime(LocalDateTime.now().format(formatter));
+            // -----------------------------------
+        	
+            // 1. Check if a Gateway with this specific ID already exists
+            Optional<GatewayEntity> existingOpt = gatewayRepo.findByGatewayId(gateway.getGatewayId());
+            
+            if (existingOpt.isPresent()) {
+                // CASE: Exists -> Update it
+                // We take the Primary Key (sl_no/id) from the existing record
+                // and set it on the incoming 'gateway' object.
+                // This tells Hibernate: "Don't insert new, UPDATE this ID."
+                GatewayEntity existing = existingOpt.get();
+                gateway.setId(existing.getId()); 
+                
+                // Note: This replaces the null columns in DB with the data from your form.
+            } 
+            
+            // 2. Save (Updates if ID exists, Inserts if ID is null)
+            GatewayEntity savedGateway = gatewayRepo.save(gateway);
+            return ResponseEntity.ok(savedGateway);
+            
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error saving gateway: " + e.getMessage());
         }
@@ -425,7 +500,10 @@ public class FacilityController {
             // REMOVED: Set Last Inserted Time
             // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             // gateway.setLastInsertedTime(LocalDateTime.now().format(formatter));
-            
+         // --- ADDED: Set Date Time Format ---
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            gateway.setDateTime(LocalDateTime.now().format(formatter));
+            // -----------------------------------
             return ResponseEntity.ok(gatewayRepo.save(gateway));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error updating gateway: " + e.getMessage());
@@ -442,13 +520,51 @@ public class FacilityController {
         }
     }
     
-    @GetMapping("/get-gateways")
+  /*  @GetMapping("/get-gateways")
     public ResponseEntity<?> getAllGateways() {
         return ResponseEntity.ok(gatewayRepo.findAll());
+    }*/
+    
+    @GetMapping("/get-gateways")
+    public ResponseEntity<?> getAllGateways() {
+        try {
+            // Fetch all gateways
+            List<GatewayEntity> allGateways = gatewayRepo.findAll();
+
+            // FILTER: Keep only gateways where buildingId is NOT null and NOT empty
+            List<GatewayEntity> filteredGateways = allGateways.stream()
+                .filter(g -> g.getBuildingId() != null && !g.getBuildingId().trim().isEmpty())
+                .collect(Collectors.toList());
+
+            return ResponseEntity.ok(filteredGateways);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching gateways: " + e.getMessage());
+        }
     }
     
+ // --- GET ALL GATEWAYS (UNFILTERED) ---
+    @GetMapping("/get-all-gateways")
+    public ResponseEntity<?> getAllGatewaysForDropdown() {
+        try {
+            // Fetches every gateway in the DB regardless of buildingId status
+            return ResponseEntity.ok(gatewayRepo.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    // --- GET ALL METERS (UNFILTERED) ---
+    @GetMapping("/get-all-meters")
+    public ResponseEntity<?> getAllMetersForDropdown() {
+        try {
+            // Fetches every meter in the DB regardless of buildingId status
+            return ResponseEntity.ok(meterRepo.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
  // --- NEW: Meter Endpoints ---
-    @PostMapping("/add-meter")
+  /*  @PostMapping("/add-meter")
     public ResponseEntity<?> addMeter(@RequestBody MeterEntity meter) {
         try {
             // REMOVED: Set Last Inserted Time (Backend side)
@@ -459,6 +575,45 @@ public class FacilityController {
             // 2. Save Meter
             MeterEntity savedMeter = meterRepo.save(meter);
             return ResponseEntity.ok(savedMeter);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error saving meter: " + e.getMessage());
+        }
+    }*/
+    
+ // --- UPDATED: Add Meter (Upsert Logic) ---
+    @PostMapping("/add-meter")
+    public ResponseEntity<?> addMeter(@RequestBody MeterEntity meter) {
+        try {
+        	
+            // 1. Check if a Meter with this Serial No already exists
+            // (Assumes getSerialNo() maps to 'meter_sl_no' in your Entity)
+            Optional<MeterEntity> existingOpt = meterRepo.findBySerialNo(meter.getSerialNo());
+            
+            if (existingOpt.isPresent()) {
+                // CASE: Exists -> Update it
+                // We take the Primary Key (sl_no/id) from the existing record
+                // and set it on the incoming 'meter' object.
+                MeterEntity existing = existingOpt.get();
+                meter.setId(existing.getId()); 
+                
+             // IMPORTANT: If the frontend didn't send a residentId (e.g. during a technical update), 
+                // we should preserve the existing one so it doesn't become null.
+                if (meter.getResidentId() == null && existing.getResidentId() != null) {
+                    meter.setResidentId(existing.getResidentId());
+                }
+                
+                // Same logic for Resident Name if needed
+                if (meter.getResidentName() == null && existing.getResidentName() != null) {
+                    meter.setResidentName(existing.getResidentName());
+                }
+                
+                // This replaces the null columns in DB with the data from your form
+            } 
+            
+            // 2. Save (Updates if ID exists, Inserts if ID is null)
+            MeterEntity savedMeter = meterRepo.save(meter);
+            return ResponseEntity.ok(savedMeter);
+            
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error saving meter: " + e.getMessage());
         }
@@ -492,9 +647,21 @@ public class FacilityController {
         }
     }
  // NEW: Get All Meters
+ // --- GET METERS (FILTERED) ---
     @GetMapping("/get-meters")
     public ResponseEntity<?> getAllMeters() {
-        return ResponseEntity.ok(meterRepo.findAll());
+        try {
+            List<MeterEntity> allMeters = meterRepo.findAll();
+
+            // FILTER: Only show meters with Valid Building ID
+            List<MeterEntity> filteredMeters = allMeters.stream()
+                .filter(m -> m.getBuildingId() != null && !m.getBuildingId().trim().isEmpty())
+                .collect(Collectors.toList());
+
+            return ResponseEntity.ok(filteredMeters);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching meters: " + e.getMessage());
+        }
     }
     
  
