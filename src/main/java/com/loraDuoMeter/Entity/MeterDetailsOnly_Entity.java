@@ -43,6 +43,16 @@ public class MeterDetailsOnly_Entity {
 	private String meterConnectionType;
 	@Column(name="meter_model")
 	private String meterModel;
+	@Column(name="billing_date")
+	private String billingDate;
+	@Column(name="buffer_day")
+	private String bufferDay;
+	@Column(name="new_meter_sl_no")
+	private String newMeterSlNo;
+	@Column(name="tamper_detail")
+	private String tamperDetail;
+	@Column(name="replace_reason")
+	private String replaceReason;
 	
 	
 	/*@Column(name="meter_mac_address")
@@ -160,6 +170,36 @@ public class MeterDetailsOnly_Entity {
 	public void setMeterModel(String meterModel) {
 		this.meterModel = meterModel;
 	}
+	public String getBillingDate() {
+		return billingDate;
+	}
+	public void setBillingDate(String billingDate) {
+		this.billingDate = billingDate;
+	}
+	public String getBufferDay() {
+		return bufferDay;
+	}
+	public void setBufferDay(String bufferDay) {
+		this.bufferDay = bufferDay;
+	}
+	public String getNewMeterSlNo() {
+		return newMeterSlNo;
+	}
+	public void setNewMeterSlNo(String newMeterSlNo) {
+		this.newMeterSlNo = newMeterSlNo;
+	}
+	public String getTamperDetail() {
+		return tamperDetail;
+	}
+	public void setTamperDetail(String tamperDetail) {
+		this.tamperDetail = tamperDetail;
+	}
+	public String getReplaceReason() {
+		return replaceReason;
+	}
+	public void setReplaceReason(String replaceReason) {
+		this.replaceReason = replaceReason;
+	}
 	@Override
 	public String toString() {
 		return "MeterDetailsOnly_Entity [slNo=" + slNo + ", dateTime=" + dateTime + ", buildingName=" + buildingName
@@ -167,6 +207,8 @@ public class MeterDetailsOnly_Entity {
 				+ residentName + ", meterSlNo=" + meterSlNo + ", deviceType=" + deviceType + ", valveStatus="
 				+ valveStatus + ", batteryVoltage=" + batteryVoltage + ", pulseCount=" + pulseCount + ", networkType="
 				+ networkType + ", gatewayId=" + gatewayId + ", meterConnectionType=" + meterConnectionType
-				+ ", meterModel=" + meterModel + "]";
+				+ ", meterModel=" + meterModel + ", billingDate=" + billingDate + ", bufferDay=" + bufferDay
+				+ ", newMeterSlNo=" + newMeterSlNo + ", tamperDetail=" + tamperDetail + ", replaceReason="
+				+ replaceReason + "]";
 	}
 }
