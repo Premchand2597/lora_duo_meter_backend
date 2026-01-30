@@ -51,7 +51,7 @@ public class Security {
 				.cors(cors -> cors.configurationSource(request -> {
                     var config = new CorsConfiguration();
                     //	config.setAllowedOrigins(List.of("http://192.168.1.227:1997"));
-                    config.setAllowedOrigins(List.of("http://192.168.1.27:3000"));
+                    config.setAllowedOrigins(List.of("http://106.51.72.200:2026"));
                     config.setAllowedOriginPatterns(List.of("*"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
