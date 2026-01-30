@@ -1,5 +1,7 @@
 package com.loraDuoMeter.DTO;
 
+import jakarta.persistence.Column;
+
 public class MeterDetailsOnly_Dto {
 
 	private long slNo;
@@ -18,6 +20,11 @@ public class MeterDetailsOnly_Dto {
 	private String gatewayId;
 	private String meterConnectionType;
 	private String meterModel;
+	private String billingDate;
+	private String bufferDay;
+	private String newMeterSlNo;
+	private String tamperDetail;
+	private String replaceReason;
 	
 //	private String meterMacAddress;
 //	private String firmwareVersion;
@@ -125,6 +132,36 @@ public class MeterDetailsOnly_Dto {
 	public void setMeterModel(String meterModel) {
 		this.meterModel = meterModel;
 	}
+	public String getBillingDate() {
+		return billingDate;
+	}
+	public void setBillingDate(String billingDate) {
+		this.billingDate = billingDate;
+	}
+	public String getBufferDay() {
+		return bufferDay;
+	}
+	public void setBufferDay(String bufferDay) {
+		this.bufferDay = bufferDay;
+	}
+	public String getNewMeterSlNo() {
+		return newMeterSlNo;
+	}
+	public void setNewMeterSlNo(String newMeterSlNo) {
+		this.newMeterSlNo = newMeterSlNo;
+	}
+	public String getTamperDetail() {
+		return tamperDetail;
+	}
+	public void setTamperDetail(String tamperDetail) {
+		this.tamperDetail = tamperDetail;
+	}
+	public String getReplaceReason() {
+		return replaceReason;
+	}
+	public void setReplaceReason(String replaceReason) {
+		this.replaceReason = replaceReason;
+	}
 	@Override
 	public String toString() {
 		return "MeterDetailsOnly_Dto [slNo=" + slNo + ", dateTime=" + dateTime + ", buildingName=" + buildingName
@@ -132,6 +169,8 @@ public class MeterDetailsOnly_Dto {
 				+ residentName + ", meterSlNo=" + meterSlNo + ", networkType=" + networkType + ", deviceType="
 				+ deviceType + ", valveStatus=" + valveStatus + ", batteryVoltage=" + batteryVoltage + ", pulseCount="
 				+ pulseCount + ", gatewayId=" + gatewayId + ", meterConnectionType=" + meterConnectionType
-				+ ", meterModel=" + meterModel + "]";
+				+ ", meterModel=" + meterModel + ", billingDate=" + billingDate + ", bufferDay=" + bufferDay
+				+ ", newMeterSlNo=" + newMeterSlNo + ", tamperDetail=" + tamperDetail + ", replaceReason="
+				+ replaceReason + "]";
 	}
 }

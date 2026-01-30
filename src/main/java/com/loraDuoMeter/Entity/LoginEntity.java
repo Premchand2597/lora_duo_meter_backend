@@ -20,6 +20,7 @@ public class LoginEntity {
 	private String access_type;
 	private String created_by;
 	private String name;
+	private String otp;
 	
 	public int getSlNo() {
 		return slNo;
@@ -57,9 +58,15 @@ public class LoginEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public String getOtp() {
+		return otp;
+	}
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
 	@Override
 	public String toString() {
 		return "LoginEntity [slNo=" + slNo + ", email=" + email + ", password=" + password + ", access_type="
-				+ access_type + ", created_by=" + created_by + ", name=" + name + "]";
+				+ access_type + ", created_by=" + created_by + ", name=" + name + ", otp=" + otp + "]";
 	}
 }
