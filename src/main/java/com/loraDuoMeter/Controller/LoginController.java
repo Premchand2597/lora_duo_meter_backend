@@ -93,6 +93,7 @@ public class LoginController {
 	public ResponseEntity<?> login(@Valid @RequestBody LoginDto req, HttpServletResponse response){
 		try {
 			
+			System.out.println("hiiiiiiiiiiiiiii");
 			Authentication authenticate = manager.authenticate(new UsernamePasswordAuthenticationToken(req.getEmail(), 
 																										req.getPassword()));
 			
