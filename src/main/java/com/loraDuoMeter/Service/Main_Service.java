@@ -8,6 +8,7 @@ import com.loraDuoMeter.DTO.MeterDetailsMeterSlNo_Dto;
 import com.loraDuoMeter.DTO.MeterDetailsOnly_Dto;
 import com.loraDuoMeter.DTO.MeterDetails_Dto;
 import com.loraDuoMeter.DTO.RegisterDto;
+import com.loraDuoMeter.DTO.TamperGraphDto;
 
 public interface Main_Service {
 	RegisterDto addNewData(RegisterDto dto);
@@ -17,4 +18,5 @@ public interface Main_Service {
 	List<MeterDetailsBuildingName_Dto> getDistinctBuildingNames();
 	List<MeterDetailsMeterSlNo_Dto> getMeterSlNoBasedOnBuildingName(String buildingName);
 	MeterDetailsOnly_Dto getMeterDetailsByMeterSlNo(String meterSlNo);
+	List<TamperGraphDto> getTamperGraphData();
 }

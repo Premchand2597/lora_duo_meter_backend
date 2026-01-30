@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,9 +36,10 @@ public class Security {
 		return http
 				.csrf(csrf->csrf.disable())
 				.authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/**").permitAll()
-												.requestMatchers("/api/admin/**", "/api/dashboard/**",
-												"/api/facility/**").hasRole("Admin")
-												.requestMatchers("/api/user/**").hasAnyRole("User", "Admin")
+						.requestMatchers(HttpMethod.GET, "/**").permitAll()
+						.requestMatchers("/api/admin/**").hasRole("Admin")
+						.requestMatchers("/api/downlink/**").permitAll()
+						.requestMatchers("/api/user/**").hasAnyRole("User", "Admin")
 												.anyRequest().authenticated())
 				.sessionManagement(session ->
 	                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -45,7 +47,8 @@ public class Security {
 				.exceptionHandling(ex->ex.authenticationEntryPoint(customAuthEntryPoint))
 				.cors(cors -> cors.configurationSource(request -> {
                     var config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000"));
+					 config.setAllowedOrigins(List.of("http://localhost:3000")); 
+                    config.setAllowedOriginPatterns(List.of("*"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);
