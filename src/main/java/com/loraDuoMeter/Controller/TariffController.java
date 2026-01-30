@@ -1,5 +1,7 @@
 package com.loraDuoMeter.Controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +55,8 @@ public class TariffController {
 	    System.out.println("Replacement Fee       : " + tariff.getReplacementFee());
 
 	    try {
+	    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+	        tariff.setLastUpdated(LocalDateTime.now().format(formatter));
 	        // 🔹 Save tariff to database
 	        TariffEntity saved = tariffRepo.save(tariff);
 
@@ -101,7 +105,11 @@ public class TariffController {
         tariff.setLateCharge(tariffDetails.getLateCharge());
         tariff.setInitialRechargeFee(tariffDetails.getInitialRechargeFee());
         tariff.setReplacementFee(tariffDetails.getReplacementFee());
-
+        tariff.setZoneId(tariffDetails.getZoneId()); // Syncing Zone info
+        
+        // Manual Timestamp logic
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        tariff.setLastUpdated(LocalDateTime.now().format(formatter));
         return ResponseEntity.ok(tariffRepo.save(tariff));
     }
 
@@ -109,9 +117,9 @@ public class TariffController {
     public ResponseEntity<?> deleteTariff(@PathVariable Long id) {
         try {
             tariffRepo.deleteById(id);
-            return ResponseEntity.ok("Tariff deleted successfully");
+            return ResponseEntity.ok("Gas Tariff deleted successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error deleting tariff: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
 	

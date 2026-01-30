@@ -1,13 +1,23 @@
 package com.loraDuoMeter.Controller;
 
-import com.loraDuoMeter.Entity.WaterTariffEntity;
-import com.loraDuoMeter.Repo.WaterTariffRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.loraDuoMeter.Entity.WaterTariffEntity;
+import com.loraDuoMeter.Repo.WaterTariffRepo;
 
 @RestController
 @RequestMapping("/api/water-tariff")
@@ -20,6 +30,9 @@ public class WaterTariffController {
     @PostMapping("/add-tariff")
     public ResponseEntity<?> addWaterTariff(@RequestBody WaterTariffEntity tariff) {
         try {
+        	// Set manual timestamp string in dd-MM-yyyy HH:mm:ss format
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            tariff.setLastUpdated(LocalDateTime.now().format(formatter));
             System.out.println("Saving Water Tariff for Location: " + tariff.getLocation());
             WaterTariffEntity saved = waterTariffRepo.save(tariff);
             return ResponseEntity.ok(saved);
@@ -52,7 +65,12 @@ public class WaterTariffController {
         tariff.setLateCharge(tariffDetails.getLateCharge());
         tariff.setInitialRechargeFee(tariffDetails.getInitialRechargeFee());
         tariff.setReplacementFee(tariffDetails.getReplacementFee());
-        
+     // ... (Your existing field updates: location, buildingIds, etc.)
+        tariff.setZoneId(tariffDetails.getZoneId()); // Ensure zone is updated
+
+        // Update the timestamp string on every edit
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        tariff.setLastUpdated(LocalDateTime.now().format(formatter));
         // Water specific fields
         tariff.setMeterCharges(tariffDetails.getMeterCharges());
         tariff.setSanitaryCharges(tariffDetails.getSanitaryCharges());
@@ -60,5 +78,17 @@ public class WaterTariffController {
         tariff.setOtherCharges(tariffDetails.getOtherCharges());
 
         return ResponseEntity.ok(waterTariffRepo.save(tariff));
+    }
+    
+    
+    
+    @DeleteMapping("/delete-tariff/{id}")
+    public ResponseEntity<?> deleteWaterTariff(@PathVariable Long id) {
+        try {
+            waterTariffRepo.deleteById(id);
+            return ResponseEntity.ok("Water Tariff deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 }

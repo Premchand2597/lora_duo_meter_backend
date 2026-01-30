@@ -1,5 +1,6 @@
 package com.loraDuoMeter.Entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,6 +11,55 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "water_tariffs")
 public class WaterTariffEntity {
+	public WaterTariffEntity(Long id, String location, String buildingIds, Double unitPrice, Double securityDeposit,
+			Double replacementFee, Double meterCharges, Double sanitaryCharges, Double borewellCharges,
+			Double otherCharges, Double initialRechargeFee, Double connectionFee, Double processingFee,
+			Double disconnectFee, Double lateCharge, Long zoneId, String type, String lastUpdated) {
+		super();
+		this.id = id;
+		this.location = location;
+		this.buildingIds = buildingIds;
+		this.unitPrice = unitPrice;
+		this.securityDeposit = securityDeposit;
+		this.replacementFee = replacementFee;
+		this.meterCharges = meterCharges;
+		this.sanitaryCharges = sanitaryCharges;
+		this.borewellCharges = borewellCharges;
+		this.otherCharges = otherCharges;
+		this.initialRechargeFee = initialRechargeFee;
+		this.connectionFee = connectionFee;
+		this.processingFee = processingFee;
+		this.disconnectFee = disconnectFee;
+		this.lateCharge = lateCharge;
+		this.zoneId = zoneId;
+		this.type = type;
+		this.lastUpdated = lastUpdated;
+	}
+
+	public WaterTariffEntity(Long id, String location, String buildingIds, Double unitPrice, Double securityDeposit,
+			Double replacementFee, Double meterCharges, Double sanitaryCharges, Double borewellCharges,
+			Double otherCharges, Double initialRechargeFee, Double connectionFee, Double processingFee,
+			Double disconnectFee, Double lateCharge, Long zoneId, String type) {
+		super();
+		this.id = id;
+		this.location = location;
+		this.buildingIds = buildingIds;
+		this.unitPrice = unitPrice;
+		this.securityDeposit = securityDeposit;
+		this.replacementFee = replacementFee;
+		this.meterCharges = meterCharges;
+		this.sanitaryCharges = sanitaryCharges;
+		this.borewellCharges = borewellCharges;
+		this.otherCharges = otherCharges;
+		this.initialRechargeFee = initialRechargeFee;
+		this.connectionFee = connectionFee;
+		this.processingFee = processingFee;
+		this.disconnectFee = disconnectFee;
+		this.lateCharge = lateCharge;
+		this.zoneId = zoneId;
+		this.type = type;
+	}
+
 	public WaterTariffEntity() {
 		super();
 	}
@@ -65,6 +115,10 @@ public class WaterTariffEntity {
     private Double lateCharge;
     
     private Long zoneId; // To store the selected Zone ID
+    private String type;
+    
+    @Column(name = "last_updated")
+    private String lastUpdated; // Must be a normal String, not LocalDateTime
 
 	public Long getId() {
 		return id;
@@ -192,5 +246,21 @@ public class WaterTariffEntity {
 
 	public void setZoneId(Long zoneId) {
 		this.zoneId = zoneId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(String lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 }

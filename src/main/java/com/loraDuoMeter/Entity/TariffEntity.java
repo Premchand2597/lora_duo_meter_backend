@@ -1,5 +1,6 @@
 package com.loraDuoMeter.Entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +12,24 @@ import jakarta.persistence.Table;
 @Table(name = "tariffs")
 public class TariffEntity {
 
+	public TariffEntity(Long id, String location, String buildingIds, Double unitPrice, Double securityDeposit,
+			Double connectionFee, Double processingFee, Double disconnectFee, Double lateCharge,
+			Double initialRechargeFee, Double replacementFee, Long zoneId, String lastUpdated) {
+		super();
+		this.id = id;
+		this.location = location;
+		this.buildingIds = buildingIds;
+		this.unitPrice = unitPrice;
+		this.securityDeposit = securityDeposit;
+		this.connectionFee = connectionFee;
+		this.processingFee = processingFee;
+		this.disconnectFee = disconnectFee;
+		this.lateCharge = lateCharge;
+		this.initialRechargeFee = initialRechargeFee;
+		this.replacementFee = replacementFee;
+		this.zoneId = zoneId;
+		this.lastUpdated = lastUpdated;
+	}
 	public TariffEntity() {
 		super();
 	}
@@ -50,6 +69,13 @@ public class TariffEntity {
     private Double lateCharge;
     private Double initialRechargeFee;
     private Double replacementFee;
+    
+    @Column(name = "zone_id")
+    private Long zoneId;
+
+    @Column(name = "last_updated")
+    private String lastUpdated; // Changed to a normal String
+    
 	public Long getId() {
 		return id;
 	}
@@ -115,6 +141,18 @@ public class TariffEntity {
 	}
 	public void setReplacementFee(Double replacementFee) {
 		this.replacementFee = replacementFee;
+	}
+	public Long getZoneId() {
+		return zoneId;
+	}
+	public void setZoneId(Long zoneId) {
+		this.zoneId = zoneId;
+	}
+	public String getLastUpdated() {
+		return lastUpdated;
+	}
+	public void setLastUpdated(String lastUpdated) {
+		this.lastUpdated = lastUpdated;
 	}
 	
 }

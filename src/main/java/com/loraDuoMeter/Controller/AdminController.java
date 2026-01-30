@@ -15,6 +15,7 @@ import com.loraDuoMeter.DTO.MeterDetailsBuildingName_Dto;
 import com.loraDuoMeter.DTO.MeterDetailsMeterSlNo_Dto;
 import com.loraDuoMeter.DTO.MeterDetailsOnly_Dto;
 import com.loraDuoMeter.DTO.MeterDetails_Dto;
+import com.loraDuoMeter.Entity.OdmMeterInfoEntity;
 import com.loraDuoMeter.Service.Main_Service;
 
 @RestController
@@ -94,5 +95,19 @@ public class AdminController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
+	}
+	
+	@GetMapping("/odm-meter-info")
+	public ResponseEntity<List<OdmMeterInfoEntity>> getOdmMeterInfo() {
+	    return ResponseEntity.ok(service.getOdmMeterInfo());
+	}
+	
+	@GetMapping("/instantaneous-data")
+	public ResponseEntity<?> getInstantaneousData() {
+	    try {
+	        return new ResponseEntity<>(service.getInstantaneousData(), HttpStatus.OK);
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    }
 	}
 }

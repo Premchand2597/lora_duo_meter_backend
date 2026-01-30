@@ -24,12 +24,16 @@ import com.loraDuoMeter.Entity.LoginEntity;
 import com.loraDuoMeter.Entity.MeterDetailsOnly_Entity;
 import com.loraDuoMeter.Entity.MeterDetails_Entity;
 import com.loraDuoMeter.Entity.MeterEntity;
+import com.loraDuoMeter.Entity.OdmInstantaneousEntity;
+import com.loraDuoMeter.Entity.OdmMeterInfoEntity;
 import com.loraDuoMeter.Entity.TamperEventEntity;
 import com.loraDuoMeter.Repo.BatteryCutOff_Repo;
 import com.loraDuoMeter.Repo.LoginRepo;
 import com.loraDuoMeter.Repo.MeterDetailsOnly_Repo;
 import com.loraDuoMeter.Repo.MeterDetails_Repo;
 import com.loraDuoMeter.Repo.MeterRepo;
+import com.loraDuoMeter.Repo.OdmInstantaneousRepo;
+import com.loraDuoMeter.Repo.OdmMeterInfoRepo;
 import com.loraDuoMeter.Repo.TamperEventRepo;
 import com.loraDuoMeter.Service.Main_Service;
 
@@ -59,6 +63,12 @@ public class MainServiceImpl implements Main_Service{
 
 	    @Autowired
 	    private MeterRepo meterRepo;
+	    
+	    @Autowired
+	    private OdmMeterInfoRepo odmMeterInfoRepo;
+	    
+	    @Autowired
+	    private OdmInstantaneousRepo instantaneousRepo;
 
 	@Override
 	public RegisterDto addNewData(RegisterDto dto) {
@@ -210,5 +220,16 @@ public class MainServiceImpl implements Main_Service{
 	        e.printStackTrace();
 	        return new ArrayList<>();
 	    }
+	}
+	
+	
+	@Override
+	public List<OdmMeterInfoEntity> getOdmMeterInfo() {
+	    return odmMeterInfoRepo.findAllByOrderByLastUpdateTimeDesc();
+	}
+	
+	@Override
+	public List<OdmInstantaneousEntity> getInstantaneousData() {
+	    return instantaneousRepo.findAllByOrderByLastUpdateTimeDesc();
 	}
 }
