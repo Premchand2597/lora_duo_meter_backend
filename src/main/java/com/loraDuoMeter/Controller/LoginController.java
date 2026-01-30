@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,7 +37,9 @@ import com.loraDuoMeter.DTO.LoginDto;
 import com.loraDuoMeter.DTO.NotificationIndicationDto;
 import com.loraDuoMeter.DTO.NotificationIndicationWithResidentDetailsDto;
 import com.loraDuoMeter.DTO.RegisterDto;
+import com.loraDuoMeter.Entity.LoginEntity;
 import com.loraDuoMeter.Entity.RefreshToken_Entity;
+import com.loraDuoMeter.Repo.LoginRepo;
 import com.loraDuoMeter.Repo.NotificationIndicationRepo;
 import com.loraDuoMeter.Repo.RefreshToken_Repo;
 import com.loraDuoMeter.Service.CustomUserDetailsService;
@@ -72,6 +75,9 @@ public class LoginController {
 	
 	@Autowired
 	private NotificationIndicationRepo notificationIndicationRepo;
+	
+	@Autowired
+	private LoginRepo loginRepo;
 	
 	@Autowired
     private JavaMailSender mailSender;
@@ -114,9 +120,11 @@ public class LoginController {
 			// use cookie service to attach refresh token in cookie
 	        cookieService.attachRefreshCookie(response, refreshToken, 86400);
 	        cookieService.addNoStoreHeader(response);
+	        
+	        Optional<LoginEntity> data = loginRepo.findByEmail(user.getUsername());
 			
 			LoginCustomResponse res = new LoginCustomResponse(user.getUsername(), accessToken, 
-					user.getAuthorities().iterator().next().getAuthority());
+					user.getAuthorities().iterator().next().getAuthority(), data.get().getName());
 			
 			return new ResponseEntity<LoginCustomResponse>(res, HttpStatus.OK);
 		} catch (BadCredentialsException ex) {
@@ -192,8 +200,10 @@ public class LoginController {
 	    // 7️⃣ Send new refresh token in cookie
 	    cookieService.attachRefreshCookie(response, newRefreshToken, 86400);
 	    cookieService.addNoStoreHeader(response);
+	    
+	    Optional<LoginEntity> data = loginRepo.findByEmail(user.getUsername());
 
-	    return ResponseEntity.ok(new LoginCustomResponse(username, newAccessToken, role));
+	    return ResponseEntity.ok(new LoginCustomResponse(username, newAccessToken, role, data.get().getName()));
 	}
 
 	
