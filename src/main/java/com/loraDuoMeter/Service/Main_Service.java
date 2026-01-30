@@ -10,9 +10,11 @@ import com.loraDuoMeter.DTO.MeterDetails_Dto;
 import com.loraDuoMeter.DTO.MqttApiKey_Dto;
 import com.loraDuoMeter.DTO.NotificationIndicationDto;
 import com.loraDuoMeter.DTO.NotificationIndicationWithResidentDetailsDto;
+import com.loraDuoMeter.DTO.RechargeFinish_Dto;
 import com.loraDuoMeter.DTO.RegisterDto;
 import com.loraDuoMeter.DTO.TamperEventAndMeterDetailsDto;
 import com.loraDuoMeter.DTO.TamperEventsDto;
+import com.loraDuoMeter.DTO.TamperGraphDto;
 
 public interface Main_Service {
 	RegisterDto addNewData(RegisterDto dto);
@@ -31,4 +33,6 @@ public interface Main_Service {
 	List<NotificationIndicationWithResidentDetailsDto> fetchAllNotificationDetailsWithResidentDetails();
 	List<MqttApiKey_Dto> fetchAllMqttDetails();
 	int insertApiKetDetails(MqttApiKey_Dto dto);
+	List<TamperGraphDto> getTamperGraphData();
+	List<RechargeFinish_Dto> getAllRechargeFinishDetails();
 }

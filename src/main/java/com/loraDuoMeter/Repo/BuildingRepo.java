@@ -6,4 +6,6 @@ import com.loraDuoMeter.Entity.BuildingEntity;
 
 public interface BuildingRepo extends JpaRepository<BuildingEntity, Long>{
 
+	BuildingEntity findByNameAndAddress(String name, String address);
+	
 }

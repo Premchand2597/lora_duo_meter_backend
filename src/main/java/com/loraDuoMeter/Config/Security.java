@@ -37,7 +37,12 @@ public class Security {
 				.authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/**").permitAll()
 												.requestMatchers("/api/admin/**", "/api/dashboard/**",
 												"/api/facility/**").hasRole("Admin")
+												// To this:
+												.requestMatchers("/api/zones/**").hasAnyRole("User", "Admin")
 												.requestMatchers("/api/user/**").hasAnyRole("User", "Admin")
+												.requestMatchers("/api/tariff/**").hasAnyRole("User", "Admin")
+							                    .requestMatchers("/api/water-tariff/**").hasAnyRole("User", "Admin")
+												
 												.anyRequest().authenticated())
 				.sessionManagement(session ->
 	                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -45,7 +50,9 @@ public class Security {
 				.exceptionHandling(ex->ex.authenticationEntryPoint(customAuthEntryPoint))
 				.cors(cors -> cors.configurationSource(request -> {
                     var config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://192.168.1.66:3000"));
+                    //	config.setAllowedOrigins(List.of("http://192.168.1.227:1997"));
+                    config.setAllowedOrigins(List.of("http://192.168.1.227:3000"));
+                    //  config.setAllowedOriginPatterns(List.of("*"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);

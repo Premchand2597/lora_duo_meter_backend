@@ -25,6 +25,8 @@ import com.loraDuoMeter.DTO.MeterDetailsMeterSlNo_Dto;
 import com.loraDuoMeter.DTO.MeterDetailsOnly_Dto;
 import com.loraDuoMeter.DTO.MeterDetails_Dto;
 import com.loraDuoMeter.DTO.MqttApiKey_Dto;
+import com.loraDuoMeter.DTO.PaymentBill_Dto;
+import com.loraDuoMeter.DTO.RechargeFinish_Dto;
 import com.loraDuoMeter.DTO.TamperEventAndMeterDetailsDto;
 import com.loraDuoMeter.DTO.TamperEventsDto;
 import com.loraDuoMeter.Repo.LoginRepo;
@@ -286,6 +288,28 @@ public class AdminController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+	
+	@GetMapping("/fetchAllRechargeFinishData")
+	public ResponseEntity<?> getAllRechargeFinishData(){
+		try {
+			List<RechargeFinish_Dto> fetchedData = service.getAllRechargeFinishDetails();
+			return new ResponseEntity<List<RechargeFinish_Dto>>(fetchedData, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
+	
+	@PostMapping("/billPayment")
+	public ResponseEntity<?> postPaymentDetails(@RequestBody PaymentBill_Dto payLoad){
+		try {
+			System.out.println("payLoad == "+payLoad);
+			return new ResponseEntity<String>("Payment Done!", HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 

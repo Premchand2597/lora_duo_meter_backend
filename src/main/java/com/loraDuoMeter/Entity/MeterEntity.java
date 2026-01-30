@@ -11,6 +11,39 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "meter_details")
 public class MeterEntity {
+	public MeterEntity(Long id, String dateTime, String buildingName, String buildingId, String floorNo, String flatNo,
+			String residentType, String residentName, String serialNo, String macAddress, String networkType,
+			String deviceType, String model, String firmware, String connectionType, String valveStatus,
+			String batteryVoltage, String deviceRtc, String pulseCount, String rechargeAmount, String rechargeStatus,
+			String manufacturer, String makeYear, String gatewayId, String residentId) {
+		super();
+		this.id = id;
+		this.dateTime = dateTime;
+		this.buildingName = buildingName;
+		this.buildingId = buildingId;
+		this.floorNo = floorNo;
+		this.flatNo = flatNo;
+		this.residentType = residentType;
+		this.residentName = residentName;
+		this.serialNo = serialNo;
+		this.macAddress = macAddress;
+		this.networkType = networkType;
+		this.deviceType = deviceType;
+		this.model = model;
+		this.firmware = firmware;
+		this.connectionType = connectionType;
+		this.valveStatus = valveStatus;
+		this.batteryVoltage = batteryVoltage;
+		this.deviceRtc = deviceRtc;
+		this.pulseCount = pulseCount;
+		this.rechargeAmount = rechargeAmount;
+		this.rechargeStatus = rechargeStatus;
+		this.manufacturer = manufacturer;
+		this.makeYear = makeYear;
+		this.gatewayId = gatewayId;
+		this.residentId = residentId;
+	}
+
 	public MeterEntity() {
 		super();
 	}
@@ -122,7 +155,9 @@ public class MeterEntity {
     @Column(name = "gateway_id")
     private String gatewayId;
 
-   
+ // --- NEW FIELD: RESIDENT ID ---
+    @Column(name = "resident_id") 
+    private String residentId;
 
 	public Long getId() {
 		return id;
@@ -316,5 +351,14 @@ public class MeterEntity {
 		this.gatewayId = gatewayId;
 	}
 
+	public String getResidentId() {
+		return residentId;
+	}
+
+	public void setResidentId(String residentId) {
+		this.residentId = residentId;
+	}
+
+	
 
 }
