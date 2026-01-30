@@ -22,6 +22,7 @@ import com.loraDuoMeter.DTO.MeterDetails_Dto;
 import com.loraDuoMeter.DTO.MqttApiKey_Dto;
 import com.loraDuoMeter.DTO.NotificationIndicationDto;
 import com.loraDuoMeter.DTO.NotificationIndicationWithResidentDetailsDto;
+import com.loraDuoMeter.DTO.RechargeFinish_Dto;
 import com.loraDuoMeter.DTO.RegisterDto;
 import com.loraDuoMeter.DTO.TamperEventAndMeterDetailsDto;
 import com.loraDuoMeter.DTO.TamperEventsDto;
@@ -33,6 +34,7 @@ import com.loraDuoMeter.Entity.MeterDetails_Entity;
 import com.loraDuoMeter.Entity.MqttApiKey_Entity;
 import com.loraDuoMeter.Entity.NotificationIndicationEntity;
 import com.loraDuoMeter.Entity.NotificationIndicationWithResidentDetailsEntity;
+import com.loraDuoMeter.Entity.RechargeFinish_Entity;
 import com.loraDuoMeter.Entity.TamperEventAndMeterDetails_Entity;
 import com.loraDuoMeter.Entity.TamperEventsEntity;
 import com.loraDuoMeter.Entity.MeterEntity;
@@ -44,6 +46,7 @@ import com.loraDuoMeter.Repo.MeterDetails_Repo;
 import com.loraDuoMeter.Repo.MqttApiKey_Repo;
 import com.loraDuoMeter.Repo.NotificationIndicationRepo;
 import com.loraDuoMeter.Repo.NotificationIndicationWithResidentDetailsRepo;
+import com.loraDuoMeter.Repo.RechargeFinish_Repo;
 import com.loraDuoMeter.Repo.TamperEventAndMeterDetails_Repo;
 import com.loraDuoMeter.Repo.TamperEventsRepo;
 import com.loraDuoMeter.Repo.MeterRepo;
@@ -91,6 +94,9 @@ public class MainServiceImpl implements Main_Service{
 
 	@Autowired
 	private MeterRepo meterRepo;
+	
+	@Autowired
+	private RechargeFinish_Repo rechargeFinish_Repo;
 
 	@Override
 	public RegisterDto addNewData(RegisterDto dto) {
@@ -316,5 +322,12 @@ public class MainServiceImpl implements Main_Service{
 	        e.printStackTrace();
 	        return new ArrayList<>();
 	    }
+	}
+
+	@Override
+	public List<RechargeFinish_Dto> getAllRechargeFinishDetails() {
+		List<RechargeFinish_Entity> datas = rechargeFinish_Repo.findAllByOrderBySlNoDesc();
+		List<RechargeFinish_Dto> dtoList = datas.stream().map(data -> mapper.map(data, RechargeFinish_Dto.class)).toList();
+		return dtoList;
 	}
 }

@@ -13,7 +13,6 @@ import com.loraDuoMeter.Entity.MeterDetails_Entity;
 
 import jakarta.transaction.Transactional;
 
-
 public interface MeterDetails_Repo extends JpaRepository<MeterDetails_Entity, Long>{
 
 	

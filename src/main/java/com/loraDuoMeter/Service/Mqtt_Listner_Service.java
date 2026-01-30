@@ -100,7 +100,7 @@ public void connect() {
         // Get Mqtt broker details from Mqtt table
         user_name = dto.getUserName();
         api_key = dto.getApiKey().toCharArray();
-        broker_ip_address = "tcp://" + dto.getBrokerIpAddress();
+        broker_ip_address = "tcps://" + dto.getBrokerIpAddress();
         broker_port = ":" + dto.getPortNumber();
         broker_address = broker_ip_address + broker_port;
         topic = dto.getTopicName();
