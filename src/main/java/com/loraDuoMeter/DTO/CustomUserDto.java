@@ -38,9 +38,5 @@ public class CustomUserDto implements UserDetails{
 	public String getUsername() {
 		return user.getEmail();
 	}
-	
-	public String getName() {
-		return user.getName();
-	}
 
 }

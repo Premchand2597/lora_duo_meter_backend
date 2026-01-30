@@ -13,14 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.loraDuoMeter.DTO.DailyUpdateDisplay_DTO;
 import com.loraDuoMeter.DTO.TamperEventDto;
 import com.loraDuoMeter.DTO.TamperGraphDto;
 import com.loraDuoMeter.Entity.BuildingEntity;
 import com.loraDuoMeter.Entity.MeterEntity;
 import com.loraDuoMeter.Entity.TamperEventEntity;
 import com.loraDuoMeter.Repo.BuildingRepo; // Import BuildingRepo
+import com.loraDuoMeter.Repo.IDaily_Update_Display_Repo;
 import com.loraDuoMeter.Repo.MeterRepo;
 import com.loraDuoMeter.Repo.TamperEventRepo;
+import com.loraDuoMeter.Service.Daily_Update_Service;
 import com.loraDuoMeter.Service.Main_Service;
 
 @RestController

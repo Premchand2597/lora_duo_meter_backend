@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.loraDuoMeter.DTO.BatteryCutOff_Dto;
-import com.loraDuoMeter.DTO.MeterDetailsBuildingName_Dto;
-import com.loraDuoMeter.DTO.MeterDetailsMeterSlNo_Dto;
-import com.loraDuoMeter.DTO.MeterDetailsOnly_Dto;
 import com.loraDuoMeter.DTO.MeterDetails_Dto;
 import com.loraDuoMeter.DTO.MqttApiKey_Dto;
 import com.loraDuoMeter.DTO.PaymentBill_Dto;
@@ -80,7 +77,7 @@ public class AdminController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	
+
 	@GetMapping("/meterDetails/{id}")
 	public ResponseEntity<?> getMeterDetailsWithBatterCuttOffBasedOnMeterId(@PathVariable long id){
 		try {

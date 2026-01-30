@@ -110,14 +110,12 @@ public class LoginController {
 			
 			refreshToken_Repo.save(savedRefreshToken);
 			
-			CustomUserDto fetchedUserData = (CustomUserDto) customUserDetailsService.loadUserByUsername(user.getUsername());
-			
 			// use cookie service to attach refresh token in cookie
 	        cookieService.attachRefreshCookie(response, refreshToken, 86400);
 	        cookieService.addNoStoreHeader(response);
 			
 			LoginCustomResponse res = new LoginCustomResponse(user.getUsername(), accessToken, 
-					user.getAuthorities().iterator().next().getAuthority(), fetchedUserData.getName());
+					user.getAuthorities().iterator().next().getAuthority());
 			
 			return new ResponseEntity<LoginCustomResponse>(res, HttpStatus.OK);
 		} catch (BadCredentialsException ex) {
@@ -194,7 +192,7 @@ public class LoginController {
 	    cookieService.attachRefreshCookie(response, newRefreshToken, 86400);
 	    cookieService.addNoStoreHeader(response);
 
-	    return ResponseEntity.ok(new LoginCustomResponse(username, newAccessToken, role, user.getName()));
+	    return ResponseEntity.ok(new LoginCustomResponse(username, newAccessToken, role));
 	}
 
 	

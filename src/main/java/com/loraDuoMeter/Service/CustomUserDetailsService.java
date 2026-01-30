@@ -19,7 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		LoginEntity user = loginRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found!"));
-		System.out.println("user ===== "+user);
 		return new CustomUserDto(user);
 	}
 }
