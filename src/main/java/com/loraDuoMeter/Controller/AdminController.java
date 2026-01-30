@@ -1,11 +1,10 @@
 package com.loraDuoMeter.Controller;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.loraDuoMeter.DTO.BatteryCutOff_Dto;
+import com.loraDuoMeter.DTO.MeterDetailsBuildingName_Dto;
+import com.loraDuoMeter.DTO.MeterDetailsMeterSlNo_Dto;
+import com.loraDuoMeter.DTO.MeterDetailsOnly_Dto;
 import com.loraDuoMeter.DTO.MeterDetails_Dto;
 import com.loraDuoMeter.DTO.MqttApiKey_Dto;
 import com.loraDuoMeter.DTO.TamperEventAndMeterDetailsDto;
